@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaBriefcase } from "react-icons/fa6";
 import { IoIosLink } from "react-icons/io";
 import { FaBirthdayCake } from "react-icons/fa";
@@ -7,6 +7,9 @@ import { GrUserWorker } from "react-icons/gr";
 import Modal from '../modal';
 
 const ModalData = () => {
+
+
+
     return (
         <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
             <h3>Contact Form</h3>
@@ -35,14 +38,26 @@ const ModalData = () => {
 
 const Hero = () => {
     const [modalActive, setModalActive] = useState(false);
+    const [profile, setProfile] = useState()
+    const profileDetails = async () => {
+        let data = await fetch('http://localhost:8000/api/user')
+        let { profile_details } = await data.json();
+        setProfile(profile_details);
+    }
+
+    useEffect(() => {
+        profileDetails()
+    }, [])
+
+
     return (
         <div>
             <div className='relative'>
-                <div>
-                    <img src="/img/cover.png" className='object-cover w-full' alt="" />
+                <div className=''>
+                    <img src={'http://localhost:8000/storage' + '/' + profile?.cover_img} className='w-full h-64 bg-cover bg-center' alt="" />
                 </div>
                 <div className='absolute -bottom-20 left-10'>
-                    <img src="/img/profile.png" alt="" className='object-contain rounded-full w-52 h-55' />
+                    <img src={'http://localhost:8000/storage' + '/' + profile?.profile_img} alt="" className='object-contain rounded-full w-52 h-55' />
                 </div>
             </div>
 
@@ -52,9 +67,9 @@ const Hero = () => {
             </div>
 
             <div className='grid grid-cols-6 ml-10  mt-24'>
-                <h3 className=' text-2xl col-span-6 m-0'>ABDUL AZIZ &#128187;</h3>
+                <h3 className=' text-2xl col-span-6 m-0'>{profile?.name} &#128187;</h3>
                 <p className=' text-xl text-gray-600 col-span-6 m-1'>Brings ideas to life with code! ✨.</p>
-                <p className=' text-l text-gray-600 col-span-6 m-1'> I design website and develop it that you can manage you business with ease . </p>
+                <p className=' text-l text-gray-600 col-span-6 m-1'> {profile?.bio} </p>
 
             </div>
             <div className='flex justify-around lg:mx-10 mt-5'>
